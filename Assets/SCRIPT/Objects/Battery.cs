@@ -5,8 +5,10 @@ using UnityEngine;
 public class Battery : MonoBehaviour
 {
     public Energia energymanager;
-    private void OnTriggerEnter(Collider other)
+     public void OnColissionEnter(Collider other)
     {
+
+        Debug.Log("Chocando");  
         if (other.CompareTag("Player"))
         {
             if (energymanager.AddBatery())
@@ -17,4 +19,14 @@ public class Battery : MonoBehaviour
 
         }
     }
+
+ public void BatteryActive()
+    {
+        if (energymanager.AddBatery())
+        {
+            gameObject.SetActive(false);
+
+        }
+    }
 }
+    
