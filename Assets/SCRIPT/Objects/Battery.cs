@@ -1,32 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Battery : MonoBehaviour
 {
     public Energia energymanager;
-     public void OnColissionEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-
-        Debug.Log("Chocando");  
         if (other.CompareTag("Player"))
         {
             if (energymanager.AddBatery())
-            { 
-                gameObject.SetActive(false);
+            {
+                Destroy(gameObject);
 
             }
 
         }
     }
-
- public void BatteryActive()
-    {
-        if (energymanager.AddBatery())
-        {
-            gameObject.SetActive(false);
-
-        }
-    }
 }
-    
