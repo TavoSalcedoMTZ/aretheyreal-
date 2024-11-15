@@ -11,7 +11,7 @@ public class Energia : MonoBehaviour
     private bool lamparaEncendida = false;
 
     public GameObject linternaSpotlight;
-    public Text bateriasText;
+    private Text bateriasText;
 
     public float cooldownTiempo = 1f;
     private float tiempoDesdeUltimoUso;
@@ -23,7 +23,6 @@ public class Energia : MonoBehaviour
     {
         bateriaRestante = duracionBateria;
         linternaSpotlight.SetActive(false);
-        ActualizarTextoBaterias();
         tiempoDesdeUltimoUso = cooldownTiempo;
     }
 
@@ -79,7 +78,6 @@ public class Energia : MonoBehaviour
             if (bateriaRestante <= 0)
             {
                 numeroDeBaterias--;
-                ActualizarTextoBaterias();
 
                 // Cambia el sprite al usar una batería
                 cambioImagenes.setSprite(numeroDeBaterias); // Cambia el sprite
@@ -97,17 +95,12 @@ public class Energia : MonoBehaviour
         }
     }
 
-    private void ActualizarTextoBaterias()
-    {
-        bateriasText.text = "Baterías: " + numeroDeBaterias;
-    }
 
     public bool AddBatery()
     {
         if (numeroDeBaterias < 3)
         {
             numeroDeBaterias++;
-            ActualizarTextoBaterias();
             cambioImagenes.setSprite(numeroDeBaterias); // Cambia el sprite al agregar una batería
             return true;
         }

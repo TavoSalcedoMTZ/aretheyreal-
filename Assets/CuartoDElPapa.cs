@@ -1,16 +1,48 @@
 using System.Collections;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class CuartoDElPapa : MonoBehaviour
 {
-    public TextMeshProUGUI dialogoText;
+    public TextMeshProUGUI dialogoText;  // Texto para el diálogo
+    public TextMeshProUGUI timerText;    // Texto para mostrar el temporizador
+    public int BotellasPapa = 0;         // Contador de botellas del Papa
+    private bool isTimerRunning = false;  // Para controlar si el temporizador está en ejecución
+
+    private float timer = 45f;  // Tiempo inicial del temporizador (45 segundos)
+
+    void Start()
+    {
+        // Iniciar el temporizador al comenzar el juego
+        StartCoroutine(Timer());
+    }
 
     void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            StartCoroutine(ShowAndHideText("No puedo entrar aquí, no sé cómo podría reaccionar"));
+            // Obtener el componente BotellaScript del jugador
+            BotellaScript botellaScript = collision.gameObject.GetComponentInChildren<BotellaScript>();
+
+            if (botellaScript != null && botellaScript.isPickedUp)
+            {
+                // Si la botella está en la mano, eliminarla
+                botellaScript.Drop();  // Llamamos al método Drop para soltar la botella
+
+                // Incrementar el contador de botellas
+                BotellasPapa++;
+
+                // Mostrar el mensaje en el dialogo
+                StartCoroutine(ShowAndHideText("Botellas del Papa: " + BotellasPapa));
+
+            }
+            else
+            {
+                // Si no tiene la botella, mostrar el mensaje original
+                StartCoroutine(ShowAndHideText("No puedo entrar aquí, no sé cómo podría reaccionar"));
+            }
+
             Debug.Log("Espera");
         }
     }
@@ -45,5 +77,44 @@ public class CuartoDElPapa : MonoBehaviour
         // Opcional: Reiniciar el proceso
         yield return new WaitForSeconds(1f);
         StartCoroutine(ShowAndHideText(message)); // Iniciar de nuevo
+    }
+
+    // Coroutine que maneja el temporizador
+    private IEnumerator Timer()
+    {
+        while (true)  // El temporizador se ejecuta siempre
+        {
+            // Actualizar el texto del temporizador cada segundo
+            timerText.text = "" + Mathf.Ceil(timer); // Mostrar el tiempo restante en segundos
+
+            // Esperar un segundo
+            yield return new WaitForSeconds(1f);
+
+            // Reducir el tiempo del temporizador
+            timer -= 1f;
+
+            if (timer <= 0)  // Si el tiempo se agota
+            {
+                // Si se acaba el tiempo, reducir BotellasPapa y reiniciar el temporizador
+                BotellasPapa--;
+
+                // Verificar si BotellasPapa llega a 0
+                if (BotellasPapa <= 0)
+                {
+                    // Ejecutar el evento cuando BotellasPapa llegue a cero
+                    ExecuteEvent();
+                    break;  // Terminar el temporizador si las botellas llegaron a cero
+                }
+
+                // Reiniciar el temporizador a 45 segundos para el siguiente ciclo
+                timer = 45f;
+            }
+        }
+    }
+
+    // Evento a ejecutar cuando BotellasPapa llega a cero
+    private void ExecuteEvent()
+    {
+        SceneManager.LoadScene("Game over");
     }
 }
