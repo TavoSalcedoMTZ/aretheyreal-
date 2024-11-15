@@ -8,9 +8,9 @@ public class CuartoDElPapa : MonoBehaviour
     public TextMeshProUGUI dialogoText;  // Texto para el diálogo
     public TextMeshProUGUI timerText;    // Texto para mostrar el temporizador
     public int BotellasPapa = 0;         // Contador de botellas del Papa
-    private bool isTimerRunning = false;  // Para controlar si el temporizador está en ejecución
+    private bool isTimerRunning = false;  // Para controlar si el temporizador está en ejecución        
 
-    private float timer = 45f;  // Tiempo inicial del temporizador (45 segundos)
+    private float timer = 15f;  // Tiempo inicial del temporizador (45 segundos)
 
     void Start()
     {
@@ -35,7 +35,6 @@ public class CuartoDElPapa : MonoBehaviour
 
                 // Mostrar el mensaje en el dialogo
                 StartCoroutine(ShowAndHideText("Botellas del Papa: " + BotellasPapa));
-
             }
             else
             {
@@ -49,7 +48,8 @@ public class CuartoDElPapa : MonoBehaviour
 
     void OnTriggerExit(Collider collision)
     {
-        StopAllCoroutines(); // Detener cualquier coroutine activa
+        // Detener la coroutine del temporizador si el jugador sale del área
+        StopCoroutine("Timer");
         dialogoText.text = ""; // Limpiar el texto al salir
         Debug.Log("Espera");
     }
@@ -82,7 +82,9 @@ public class CuartoDElPapa : MonoBehaviour
     // Coroutine que maneja el temporizador
     private IEnumerator Timer()
     {
-        while (true)  // El temporizador se ejecuta siempre
+        isTimerRunning = true;  // Indicamos que el temporizador está corriendo
+
+        while (isTimerRunning)  // Solo seguimos ejecutando el temporizador si está habilitado
         {
             // Actualizar el texto del temporizador cada segundo
             timerText.text = "" + Mathf.Ceil(timer); // Mostrar el tiempo restante en segundos
@@ -103,11 +105,11 @@ public class CuartoDElPapa : MonoBehaviour
                 {
                     // Ejecutar el evento cuando BotellasPapa llegue a cero
                     ExecuteEvent();
-                    break;  // Terminar el temporizador si las botellas llegaron a cero
+                    yield break;  // Terminar la coroutine del temporizador
                 }
 
                 // Reiniciar el temporizador a 45 segundos para el siguiente ciclo
-                timer = 45f;
+                timer = 15f;
             }
         }
     }
@@ -115,6 +117,8 @@ public class CuartoDElPapa : MonoBehaviour
     // Evento a ejecutar cuando BotellasPapa llega a cero
     private void ExecuteEvent()
     {
+        // Cargar la escena de Game Over
         SceneManager.LoadScene("Game over");
     }
 }
+    
