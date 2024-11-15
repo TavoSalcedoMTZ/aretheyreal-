@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using TMPro;
 
 public class LevelManager : MonoBehaviour
 {
     // Variables públicas
     public int numHours = 6; // Número total de horas de duración
     public int secPerHour = 60; // Número de segundos por hora en el juego (puedes ajustarlo)
-    public Text timerText; // UI para mostrar el temporizador
+    public TextMeshProUGUI timerText; // UI para mostrar el temporizador
     public UnityEvent Win; // Evento cuando se gana
 
     private int totalTimeInSeconds; // Tiempo total en segundos (horas convertidas a segundos)
@@ -40,6 +41,8 @@ public class LevelManager : MonoBehaviour
         // Si el tiempo llega a 0, invocar el evento Win y detener el temporizador
         if (timeRemaining <= 0)
         {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
             Win.Invoke();
             CancelInvoke("UpdateTime"); // Detiene la repetición
         }

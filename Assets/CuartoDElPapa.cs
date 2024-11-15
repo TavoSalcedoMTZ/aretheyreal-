@@ -10,7 +10,7 @@ public class CuartoDElPapa : MonoBehaviour
     public int BotellasPapa = 0;         // Contador de botellas del Papa
     private bool isTimerRunning = false;  // Para controlar si el temporizador está en ejecución        
 
-    private float timer = 15f;  // Tiempo inicial del temporizador (45 segundos)
+    private float timer = 30f;  // Tiempo inicial del temporizador (45 segundos)
 
     void Start()
     {
@@ -109,7 +109,7 @@ public class CuartoDElPapa : MonoBehaviour
                 }
 
                 // Reiniciar el temporizador a 45 segundos para el siguiente ciclo
-                timer = 15f;
+                timer = 30f;
             }
         }
     }
