@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
@@ -12,15 +13,27 @@ public class LevelManager : MonoBehaviour
     public int secPerHour = 60; // Número de segundos por hora en el juego (puedes ajustarlo)
     public TextMeshProUGUI timerText; // UI para mostrar el temporizador
     public UnityEvent Win; // Evento cuando se gana
+    public UnityEvent GameOver; // Evento cuando se pierde
 
+
+    public GameObject HUDplayer;
+    public GameObject canvas;
+    public GameObject MODELOMAMA;
+    public GameObject Screemer;
     private int totalTimeInSeconds; // Tiempo total en segundos (horas convertidas a segundos)
     private int timeRemaining; // Tiempo restante en segundos
-
+    public Momm mama;
     public static LevelManager Instance { get; private set; }
 
     // Start is called before the first frame update
     void Start()
     {
+
+        Screemer.SetActive(false);
+        MODELOMAMA.SetActive(true);
+        HUDplayer.SetActive(true);
+        canvas.SetActive(true);
+
         // Inicialización de variables
         totalTimeInSeconds = numHours * secPerHour; // Calcula el tiempo total en segundos
         timeRemaining = totalTimeInSeconds; // El tiempo restante empieza con el tiempo total
@@ -49,6 +62,9 @@ public class LevelManager : MonoBehaviour
 
         // Actualiza el texto del temporizador
         UpdateTimerText();
+
+
+        
     }
 
     // Función para actualizar el texto del temporizador en la UI
@@ -59,5 +75,32 @@ public class LevelManager : MonoBehaviour
 
         // Muestra el tiempo en formato HH:MM (Ejemplo: 06:00)
         timerText.text = string.Format("{0:D2}:{1:D2}", hours, minutes);
+    }
+
+    private void Update()
+    {
+        if (mama.gameOvER)
+        {
+      
+            Screemer.SetActive(true);
+            MODELOMAMA.SetActive(false);
+            HUDplayer.SetActive(false);
+            canvas.SetActive(false);
+            StartCoroutine(GameOverSequence());
+
+
+
+
+        }
+         
+        }
+    
+    private IEnumerator GameOverSequence()
+    {
+        Screemer.SetActive(true);
+        yield return new WaitForSeconds(2);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        GameOver.Invoke();
     }
 }

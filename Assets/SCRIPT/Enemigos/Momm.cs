@@ -18,11 +18,13 @@ public class Momm : MonoBehaviour
     public NavMeshAgent agent;
     public float distancia_ataque;
     public float randio_vision;
+    public bool gameOvER = false;
 
     public float distanciaGameOver = 1.0f; // Distancia mínima para activar Game Over
 
     void Start()
     {
+        gameOvER=false;
         animador = GetComponent<Animator>();
         target = GameObject.FindWithTag("Player"); // Asegúrate de que el Player tiene la etiqueta correcta
     }
@@ -94,13 +96,11 @@ public class Momm : MonoBehaviour
     {
         Comportamiento_Enemigo();
 
-        // Verificar la distancia manualmente para activar Game Over
+       
         if (Vector3.Distance(transform.position, target.transform.position) <= distanciaGameOver)
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            gameOvER = true;
 
-            SceneManager.LoadScene("Game over");
         }
     }
 }
