@@ -15,7 +15,7 @@ public class LevelManager : MonoBehaviour
     public UnityEvent Win; // Evento cuando se gana
     public UnityEvent GameOver; // Evento cuando se pierde
 
-
+    public GameObject menuperdida;
     public GameObject HUDplayer;
     public GameObject canvas;
     public GameObject MODELOMAMA;
@@ -28,7 +28,7 @@ public class LevelManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        menuperdida.SetActive(false);
         Screemer.SetActive(false);
         MODELOMAMA.SetActive(true);
         HUDplayer.SetActive(true);
@@ -54,8 +54,10 @@ public class LevelManager : MonoBehaviour
         // Si el tiempo llega a 0, invocar el evento Win y detener el temporizador
         if (timeRemaining <= 0)
         {
+
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+
             Win.Invoke();
             CancelInvoke("UpdateTime"); // Detiene la repetición
         }
@@ -87,7 +89,7 @@ public class LevelManager : MonoBehaviour
             HUDplayer.SetActive(false);
             canvas.SetActive(false);
             StartCoroutine(GameOverSequence());
-
+      
 
 
 
@@ -100,7 +102,10 @@ public class LevelManager : MonoBehaviour
         Screemer.SetActive(true);
         yield return new WaitForSeconds(2);
         Cursor.lockState = CursorLockMode.None;
+        menuperdida.SetActive(true);
         Cursor.visible = true;
         GameOver.Invoke();
+   
+
     }
 }
