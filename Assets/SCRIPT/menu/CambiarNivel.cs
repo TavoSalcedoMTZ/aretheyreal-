@@ -11,6 +11,11 @@ public class CambiarNivel : MonoBehaviour
         SceneManager.LoadScene(nombre);
        
     }
+    public void CargarNivel(string nombre)
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadSceneAsync(nombre);
+    }
 
     public void PausarJuEGO()
     {
