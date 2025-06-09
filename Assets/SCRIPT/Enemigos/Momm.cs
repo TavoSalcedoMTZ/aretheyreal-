@@ -2,15 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.SceneManagement; // Importar SceneManagement
+using UnityEngine.SceneManagement;
 
 public class Momm : MonoBehaviour
 {
     public int rutina;
     public float cronometro;
     public Animator animador;
-    public Quaternion angulo;
-    public float grado;
 
     public GameObject target;
     public bool atacado;
@@ -20,45 +18,56 @@ public class Momm : MonoBehaviour
     public float randio_vision;
     public bool gameOvER = false;
 
-    public float distanciaGameOver = 1.0f; // Distancia mínima para activar Game Over
+    public float distanciaGameOver = 1.0f;
+
+    private Vector3 destinoAleatorio;
 
     void Start()
     {
-        gameOvER=false;
+        gameOvER = false;
         animador = GetComponent<Animator>();
-        target = GameObject.FindWithTag("Player"); // Asegúrate de que el Player tiene la etiqueta correcta
+        target = GameObject.FindWithTag("Player");
+        agent = GetComponent<NavMeshAgent>();
     }
 
     public void Comportamiento_Enemigo()
     {
-        if (Vector3.Distance(transform.position, target.transform.position) > randio_vision)
+        float distanciaAlJugador = Vector3.Distance(transform.position, target.transform.position);
+
+        if (distanciaAlJugador > randio_vision)
         {
-            agent.enabled = false;
             animador.SetBool("run", false);
             cronometro += Time.deltaTime;
+
             if (cronometro >= 4)
             {
                 rutina = Random.Range(0, 2);
                 cronometro = 0;
+
+                if (rutina == 1)
+                {
+                    Vector3 puntoAleatorio;
+                    if (RandomPoint(transform.position, 10f, out puntoAleatorio))
+                    {
+                        destinoAleatorio = puntoAleatorio;
+                        agent.SetDestination(destinoAleatorio);
+                        animador.SetBool("walk", true);
+                        agent.isStopped = false;
+                    }
+                }
             }
 
-            switch (rutina)
+            if (rutina == 0)
             {
-                case 0:
-                    animador.SetBool("walk", false);
-                    break;
+                animador.SetBool("walk", false);
+                agent.isStopped = true;
+            }
 
-                case 1:
-                    grado = Random.Range(0, 360);
-                    angulo = Quaternion.Euler(0, grado, 0);
-                    rutina++;
-                    break;
-
-                case 2:
-                    transform.rotation = Quaternion.RotateTowards(transform.rotation, angulo, 0.5f);
-                    transform.Translate(Vector3.forward * 1 * Time.deltaTime);
-                    animador.SetBool("walk", true);
-                    break;
+            // Si llegamos al destino, detener la caminata
+            if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+            {
+                animador.SetBool("walk", false);
+                rutina = 0;
             }
         }
         else
@@ -67,10 +76,10 @@ public class Momm : MonoBehaviour
             lookPos.y = 0;
             var rotation = Quaternion.LookRotation(lookPos);
 
-            agent.enabled = true;
+            agent.isStopped = false;
             agent.SetDestination(target.transform.position);
 
-            if (Vector3.Distance(transform.position, target.transform.position) > distancia_ataque && !atacado)
+            if (distanciaAlJugador > distancia_ataque && !atacado)
             {
                 animador.SetBool("walk", false);
                 animador.SetBool("run", true);
@@ -88,7 +97,7 @@ public class Momm : MonoBehaviour
 
         if (atacado)
         {
-            agent.enabled = false;
+            agent.isStopped = true;
         }
     }
 
@@ -96,11 +105,26 @@ public class Momm : MonoBehaviour
     {
         Comportamiento_Enemigo();
 
-       
         if (Vector3.Distance(transform.position, target.transform.position) <= distanciaGameOver)
         {
             gameOvER = true;
-
         }
+    }
+
+    // Método para encontrar un punto aleatorio válido en el NavMesh
+    private bool RandomPoint(Vector3 center, float range, out Vector3 result)
+    {
+        for (int i = 0; i < 30; i++)
+        {
+            Vector3 randomPoint = center + Random.insideUnitSphere * range;
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(randomPoint, out hit, 2.0f, NavMesh.AllAreas))
+            {
+                result = hit.position;
+                return true;
+            }
+        }
+        result = center;
+        return false;
     }
 }
