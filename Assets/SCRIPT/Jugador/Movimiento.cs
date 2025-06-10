@@ -38,7 +38,7 @@ public class Movimiento : MonoBehaviour
      
         if (Input.GetKey(KeyCode.LeftShift) && stamina > 0)
         {
-            speed = speedOrigin +3;
+            speed = speedOrigin *3;
 
             stamina -= (Time.deltaTime * staminaDecrease);
 

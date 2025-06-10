@@ -16553,11 +16553,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f859882325e0b445b777d7b386acd7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedOrigin: 2
-  speed: 2
+  speedOrigin: 0.9
+  speed: 0.5
   gravity: -9.81
   jumpHeight: 0.5
-  stamina: 10
+  stamina: 5
   staminaIncrease: 1
   staminaDecrease: 1
 --- !u!143 &772761486
@@ -39755,7 +39755,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f96c54bf3ced4a47ba43320ef32f62e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numHours: 12
+  numHours: 8
   secPerHour: 60
   timerText: {fileID: 1746367612}
   Win:
